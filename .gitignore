@@ -1,0 +1,8 @@
+_archive_not_for_repo/
+venv/
+.venv/
+__pycache__/
+*.pyc
+dataset/
+data/
+*.cache
