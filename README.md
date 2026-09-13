@@ -26,7 +26,8 @@ python app.py
 ```
 
 Then open `http://127.0.0.1:5000`, upload an X-ray image, get back the image with
-predicted fracture boxes and confidence scores.
+predicted fracture boxes and confidence scores. Don't have an X-ray handy?
+`samples/` has 8 you can use to try it out.
 
 ## Project layout
 
@@ -34,6 +35,8 @@ predicted fracture boxes and confidence scores.
 app.py              Flask app - upload an image, get predictions back
 train.py             training script (Colab), kept for reference
 model/best.pt        trained weights used by app.py
+dataset/             raw GRAZPEDWRI-DX export (gitignored, see below)
+samples/             8 sample X-rays for trying the app
 results/             confusion matrix, PR curve, training curves, a sample prediction
 templates/, static/  frontend for the Flask app
 TRAINING_NOTES.md    dataset/training details and results
@@ -41,9 +44,19 @@ TRAINING_NOTES.md    dataset/training details and results
 
 ## Results (short version)
 
-Best run: YOLOv11m, 640px, 60 epochs -> mAP50 ~0.74-0.80 on the validation
-split. Full numbers, plots and the training/preprocessing writeup are in
+Best run: YOLOv11m, 640px, 60 epochs -> **peak mAP50 0.797**. Full numbers,
+plots and the training/preprocessing writeup are in
 [TRAINING_NOTES.md](TRAINING_NOTES.md).
+
+## Dataset
+
+Trained on [GRAZPEDWRI-DX](https://doi.org/10.1038/s41597-022-01328-z)
+(Nagy et al., 2022, *Scientific Data*), a pediatric wrist trauma X-ray
+dataset, licensed CC BY 4.0. The raw export isn't committed here (see
+`.gitignore`) - grab it from
+[Roboflow](https://universe.roboflow.com/ml-u7780/grazpedwri-dx-imszg/dataset/1)
+if you need it for retraining. The 8 images in `samples/` were selected and
+renamed from this dataset for demo purposes, same license applies.
 
 ## Known limitations
 

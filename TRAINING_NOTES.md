@@ -10,6 +10,20 @@ the problem simple and because the fracture class had the most examples.
 Split was the standard Roboflow train/val/test split, no custom splitting
 done on my end.
 
+GRAZPEDWRI-DX is released under CC BY 4.0. Citation:
+
+> Nagy, E., Janisch, M., Hržić, F. et al. A pediatric wrist trauma X-ray
+> dataset (GRAZPEDWRI-DX) for machine learning. *Scientific Data* 9, 222
+> (2022). https://doi.org/10.1038/s41597-022-01328-z
+> License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+
+The raw multi-class export (8 finding types, 2396 images) lives in
+`dataset/` locally - not committed to git, see `.gitignore`, get it from
+[Roboflow](https://universe.roboflow.com/ml-u7780/grazpedwri-dx-imszg/dataset/1)
+if you need it. `samples/` has 8 clean single X-rays pulled from that export
+and renamed, used as demo/test inputs for the app - same license and citation
+applies to those.
+
 ## Preprocessing
 
 Grayscale conversion + CLAHE (contrast limited adaptive histogram
@@ -37,7 +51,13 @@ up the best of what I trained, so that's the one shipped as `model/best.pt`.
 
 ## Results
 
-Final epoch (60/60):
+Peak mAP50 during training: **0.797** (epoch 51/60, from `results.csv`).
+The `best.pt` checkpoint itself carries its own saved metrics from when
+Ultralytics wrote it out (epoch 50, picked by fitness score rather than raw
+mAP50) - those read mAP50 0.795, which lines up with the logged peak, so the
+two numbers agree independently.
+
+Final epoch (60/60), for reference:
 
 | Metric | Value |
 |---|---|
@@ -45,11 +65,6 @@ Final epoch (60/60):
 | Recall | 0.688 |
 | mAP50 | 0.736 |
 | mAP50-95 | 0.480 |
-
-Peaked slightly higher mid-training (mAP50 0.797 around epoch 51) but the
-checkpoint Ultralytics actually saves as `best.pt` is picked by a combined
-fitness score (mostly mAP50-95), not raw mAP50, so it doesn't exactly match
-whichever epoch had the highest mAP50 alone.
 
 Training curves, confusion matrix and PR curve are in `results/`:
 
