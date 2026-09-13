@@ -10,6 +10,12 @@
     <h1>Bone Fracture Detection</h1>
     <p class="sub">Final year project - YOLOv11 trained on the GRAZPEDWRI-DX wrist X-ray dataset.</p>
 
+    <nav class="nav">
+      <a href="/">Single image</a>
+      <a href="/batch">Batch upload</a>
+      <a href="/evaluate">Evaluate on a dataset</a>
+    </nav>
+
     <form method="post" enctype="multipart/form-data" id="upload-form">
       <input type="file" name="image" id="file-input" accept="image/*" required>
       <button type="submit">Run detection</button>

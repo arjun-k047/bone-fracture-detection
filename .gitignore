@@ -6,3 +6,5 @@ __pycache__/
 dataset/
 data/
 *.cache
+uploads/
+outputs/

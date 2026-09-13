@@ -72,6 +72,12 @@ Training curves, confusion matrix and PR curve are in `results/`:
 - `results/confusion_matrix.png` - fracture vs background confusion matrix on val
 - `results/BoxPR_curve.png` - precision-recall curve
 - `results/sample_predictions.jpg` - a batch of validation predictions vs ground truth
+- `results/webapp_eval/` - a separate evaluation run through the app's own
+  `/evaluate` dashboard (real `model.val()` output, not the training log
+  above). Dashboard eval doesn't run images through the CLAHE preprocessing
+  step first (it hands the zip straight to Ultralytics' `val()`), so treat
+  these numbers as a second data point, not a like-for-like comparison with
+  the training-time metrics.
 
 ## What I'd do differently / next steps
 

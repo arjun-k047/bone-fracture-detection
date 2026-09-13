@@ -25,21 +25,25 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Then open `http://127.0.0.1:5000`, upload an X-ray image, get back the image with
-predicted fracture boxes and confidence scores. Don't have an X-ray handy?
-`samples/` has 8 you can use to try it out.
+Then open `http://127.0.0.1:5000`. Three pages:
+
+- `/` - upload one X-ray, get it back with predicted boxes
+- `/batch` - upload several X-rays at once
+- `/evaluate` - upload a YOLO-format images.zip + labels.zip, get mAP50/precision/recall back from a real `model.val()` run
+
+Don't have an X-ray handy? `samples/` has 8 you can use to try it out.
 
 ## Project layout
 
 ```
-app.py              Flask app - upload an image, get predictions back
-train.py             training script (Colab), kept for reference
-model/best.pt        trained weights used by app.py
-dataset/             raw GRAZPEDWRI-DX export (gitignored, see below)
-samples/             8 sample X-rays for trying the app
-results/             confusion matrix, PR curve, training curves, a sample prediction
-templates/, static/  frontend for the Flask app
-TRAINING_NOTES.md    dataset/training details and results
+app.py                Flask app - single image, batch, and evaluate routes
+train.py               training script (Colab), kept for reference
+model/best.pt          trained weights used by app.py
+dataset/               raw GRAZPEDWRI-DX export (gitignored, see below)
+samples/                8 sample X-rays for trying the app
+results/               confusion matrix, PR curve, training curves, webapp eval output
+templates/, static/    frontend for the Flask app
+TRAINING_NOTES.md      dataset/training details and results
 ```
 
 ## Results (short version)

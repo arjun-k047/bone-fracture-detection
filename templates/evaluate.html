@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Evaluate Model</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Evaluate on Your Own Dataset</h1>
+    <p class="sub">Upload a YOLO-format images.zip and labels.zip, get mAP50 / precision / recall back.</p>
+
+    <nav class="nav">
+      <a href="/">Single image</a>
+      <a href="/batch">Batch upload</a>
+      <a href="/evaluate">Evaluate on a dataset</a>
+    </nav>
+
+    <form id="eval-form">
+      <label>Images (.zip of .jpg/.png)</label>
+      <input type="file" name="images_zip" id="images-zip" accept=".zip" required>
+      <label>Labels (.zip of YOLO .txt files)</label>
+      <input type="file" name="labels_zip" id="labels-zip" accept=".zip" required>
+      <button type="submit">Run evaluation</button>
+    </form>
+
+    <p id="status" class="hint"></p>
+    <div id="metrics"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('eval-form');
+    const status = document.getElementById('status');
+    const metricsBox = document.getElementById('metrics');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const data = new FormData();
+      data.append('images_zip', document.getElementById('images-zip').files[0]);
+      data.append('labels_zip', document.getElementById('labels-zip').files[0]);
+
+      status.textContent = 'Running yolo val, this can take a minute...';
+      metricsBox.innerHTML = '';
+
+      const res = await fetch('/run_evaluation', { method: 'POST', body: data });
+      const body = await res.json();
+
+      if (body.error) {
+        status.textContent = body.error;
+        return;
+      }
+
+      status.textContent = 'Done.';
+      const m = body.metrics;
+      metricsBox.innerHTML = `
+        <table>
+          <tr><th>mAP50</th><td>${m.map50}</td></tr>
+          <tr><th>mAP50-95</th><td>${m["map50-95"]}</td></tr>
+          <tr><th>Precision</th><td>${m.precision}</td></tr>
+          <tr><th>Recall</th><td>${m.recall}</td></tr>
+        </table>
+        <img class="result" src="/eval_output/${body.eval_id}/confusion_matrix.png" alt="confusion matrix">
+      `;
+    });
+  </script>
+</body>
+</html>

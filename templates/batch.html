@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Batch Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Batch Fracture Detection</h1>
+    <p class="sub">Upload more than one X-ray at once, get a prediction back for each.</p>
+
+    <nav class="nav">
+      <a href="/">Single image</a>
+      <a href="/batch">Batch upload</a>
+      <a href="/evaluate">Evaluate on a dataset</a>
+    </nav>
+
+    <form id="batch-form">
+      <input type="file" name="images" id="batch-input" accept="image/*" multiple required>
+      <button type="submit">Run detection</button>
+    </form>
+
+    <p id="status" class="hint"></p>
+    <div id="results" class="thumb-grid"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('batch-form');
+    const input = document.getElementById('batch-input');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!input.files.length) return;
+
+      const data = new FormData();
+      for (const f of input.files) data.append('images', f);
+
+      status.textContent = `Running on ${input.files.length} image(s)...`;
+      results.innerHTML = '';
+
+      const res = await fetch('/predict_batch', { method: 'POST', body: data });
+      const body = await res.json();
+
+      if (body.error) {
+        status.textContent = body.error;
+        return;
+      }
+
+      status.textContent = `Done - ${body.results.length} image(s) processed.`;
+      for (const r of body.results) {
+        const card = document.createElement('div');
+        card.className = 'thumb-card';
+        const detText = r.detections.length
+          ? r.detections.map(d => `${d.class} (${d.confidence})`).join(', ')
+          : 'no fracture detected';
+        card.innerHTML = `
+          <img src="${r.output_url}" alt="${r.filename}">
+          <p>${r.filename}</p>
+          <p class="hint">${detText}</p>
+        `;
+        results.appendChild(card);
+      }
+    });
+  </script>
+</body>
+</html>
