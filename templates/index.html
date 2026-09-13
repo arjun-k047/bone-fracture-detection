@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Bone Fracture Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Bone Fracture Detection</h1>
+    <p class="sub">Final year project - YOLOv11 trained on the GRAZPEDWRI-DX wrist X-ray dataset.</p>
+
+    <form method="post" enctype="multipart/form-data" id="upload-form">
+      <input type="file" name="image" id="file-input" accept="image/*" required>
+      <button type="submit">Run detection</button>
+    </form>
+
+    <p id="filename" class="filename"></p>
+
+    {% if result_img %}
+      <h2>Result</h2>
+      <img class="result" src="data:image/jpeg;base64,{{ result_img }}" alt="detection result">
+      <p class="hint">Boxes show predicted fracture locations with confidence scores.</p>
+    {% endif %}
+
+    <footer>
+      <p>model: yolo11m, imgsz 640, trained 60 epochs - see <code>TRAINING_NOTES.md</code> for details</p>
+    </footer>
+  </div>
+
+  <script>
+    // just so the user can see which file they picked before hitting submit
+    const input = document.getElementById('file-input');
+    const label = document.getElementById('filename');
+    input.addEventListener('change', () => {
+      label.textContent = input.files.length ? input.files[0].name : '';
+    });
+  </script>
+</body>
+</html>
